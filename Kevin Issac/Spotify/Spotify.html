@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+        <script src="Spotify.php"></script>
+        <!--<script src="Spotify.js"></script>-->
+</head>
+
+<body>
+    <div class="container">
+        <!--<form action="javascript:void(0)" method="post" onsubmit="app.add()">
+            <input type="text" name="" id="add-sing" class="form-control" placeholder="Nombre canción">
+            <input type="text" name="" id="add-artist" class="form-control" placeholder="Nombre artista">
+            <input type="submit" value="Ingresar" class="btn btn-dark">
+        </form>
+        <br><br>
+        <p id="Contador"></p>
+        <br>
+        <table>
+            <tr>
+                <th>Canción</th>
+                <tbody id="Canción"></tbody>
+            </tr>
+            <tr>
+                <th>Artista</th>
+                <tbody id="Artista"></tbody>
+            </tr>
+        </table>-->
+
+        <form action="javascript:void(0);" method="POST" onsubmit="app.Add()"> 
+            <input type="text" id="add-name" placeholder="Nombre de la canción" class="form-control">
+            <br>
+            <input type="text" id="add-name2" placeholder="Nombre del artista" class="form-control">
+            <br>
+            <input type="submit" value="Add" class="btn btn-dark">
+          </form>
+          
+          <div id="spoiler" role="aria-hidden" style="display: none;">
+            <form action="javascript:void(0);" method="POST" id="saveEdit">
+              <input type="text" id="edit-name">
+              <input type="text" id="edit-name2">
+              <input type="submit" value="Edit" /> <a onclick="CloseInput()" aria-label="Close">&#10006;</a>
+            </form>
+          </div>
+          
+          <p id="counter"></p>
+          
+          <table class="table">
+            <tr>
+              <th>Canción</th>
+              <th>Artista</th>
+            </tr>
+              <tbody id="countries">
+              </tbody>
+              <tbody id="countries2">
+            </tbody>
+          </table>
+    </div>
+
+    <script>
+        var app = new function() {
+          this.el = document.getElementById('countries');
+          this.el2 = document.getElementById('countries2');
+          this.countries = ['Qué maldición-Remix', 'Germany', 'England', 'Spain', 'Belgium', 'Italy', 'Portugal', 'Irland', 'Luxembourg'];
+          this.countries2 = ['France', 'Germany', 'England', 'Spain', 'Belgium', 'Italy', 'Portugal', 'Irland', 'Luxembourg'];
+          this.Count = function(data) {
+            var el   = document.getElementById('counter');
+            var name = 'country';
+            var name2 = 'country2';
+            if (data) {
+              if (data > 1) {
+                name = 'countries';
+                name2 = 'countries2';
+              }
+              el.innerHTML = data + ' ' + name ;
+              el2.innerHTML = data + ' ' + name ;
+            } else {
+              el.innerHTML = 'No ' + name;
+              el2.innerHTML = 'No ' + name;
+            }
+          };
+          
+          this.FetchAll = function() {
+            var data = '';
+            if (this.countries.length > 0 || this.countries2.length > 0) {
+              for (i = 0; i < this.countries.length; i++) {
+                data += '<tr>';
+                data += '<td>' + this.countries[i] + '</td>';
+                data += '<td>' + this.countries2[i] + '</td>';
+                data += '<td><button onclick="app.Edit(' + i + ')">Edit</button></td>';
+                data += '<td><button onclick="app.Delete(' + i + ')">Delete</button></td>';
+                data += '</tr>';
+              }
+            }
+            this.Count(this.countries.length);
+            this.Count(this.countries2.length);
+            return this.el.innerHTML = data;
+            return this.el2.innerHTML = data;
+          };
+          this.Add = function () {
+            el = document.getElementById('add-name');
+            el2 = document.getElementById('add-name2');
+            // Get the value
+            var country = el.value;
+            var country2 = el2.value;
+            if (country || country2) {
+              // Add the new value
+              this.countries.push(country.trim());
+              this.countries2.push(country2.trim());
+              // Reset input value
+              el.value = '';
+              el2.value = '';
+              // Dislay the new list
+              this.FetchAll();
+            }
+          };
+          this.Edit = function (item) {
+            var el = document.getElementById('edit-name');
+            var el = document.getElementById('edit-name2');
+            // Display value in the field
+            el.value = this.countries[item];
+            el2.value = this.countries2[item];
+            // Display fields
+            document.getElementById('spoiler').style.display = 'block';
+            self = this;
+            document.getElementById('saveEdit').onsubmit = function() {
+              // Get value
+              var country = el.value;
+              var country2 = el2.value;
+              if (country || country2) {
+                // Edit value
+                self.countries.splice(item, 1, country.trim());
+                self.countries2.splice(item, 1, country.trim());
+                // Display the new list
+                self.FetchAll();
+                // Hide fields
+                CloseInput();
+              }
+            }
+          };
+          this.Delete = function (item) {
+            // Delete the current row
+            this.countries.splice(item, 1);
+            this.countries2.splice(item, 1);
+            // Display the new list
+            this.FetchAll();
+          };
+          
+        }
+        app.FetchAll();
+        function CloseInput() {
+          document.getElementById('spoiler').style.display = 'none';
+        }
+        </script>
+</body>
+
+</html>
